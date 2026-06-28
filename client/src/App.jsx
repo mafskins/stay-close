@@ -52,7 +52,7 @@ export default function App() {
   const isEmpty = friends.length === 0
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#1c1917', color: 'var(--sc-text)' }}>
+    <div style={{ backgroundColor: '#1c1917', minHeight: '100vh', color: '#f5f0eb' }}>
       <Header theme={theme} onToggleTheme={toggleTheme} onAdd={() => setModalOpen(true)} />
 
       <main className="max-w-[800px] mx-auto px-6 pb-20">
