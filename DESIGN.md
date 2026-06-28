@@ -1,310 +1,132 @@
 # DESIGN.md — Mafskins Design System
-## The foundation. Inherit this. Override what you need per product.
+## Guidelines, not rules. Creative freedom always wins.
+
+---
+
+## THE ONLY REAL RULE
+
+Make something a person would screenshot and share.
+
+If following any guideline in this file produces something that looks
+templated, generic, or forgettable — ignore the guideline.
+
+These are starting points. They exist so you don't waste time on
+decisions that don't matter. When a decision does matter — make it
+yourself. Be bold. Take the risk.
 
 ---
 
 ## PHILOSOPHY
 
-Every product built under this system should feel like it was made
-by one thoughtful person who needed it themselves. Not a startup.
-Not a SaaS. A tool with a soul.
+Every product should feel like it was made by one thoughtful person
+who needed it themselves. Not a startup. Not a SaaS product. A tool
+with a soul.
 
-Three questions every design decision must answer:
-1. Does this serve the person using it?
-2. Does this feel intentional, not accidental?
-3. Would someone notice if it was removed?
-
-If the answer to 3 is no — remove it.
-
-Before designing anything, write one sentence:
+Before designing anything, answer this:
 "When someone opens this, they should feel ___"
-That sentence governs every decision.
+
+That answer governs every decision. If a design choice doesn't serve
+that feeling — remove it.
 
 ---
 
-## COLOUR SYSTEM
+## COLOUR
 
-### Base tokens (always the same across products)
-```
-Background primary:     #0c0c0e   near-black, barely warm
-Background surface:     #141416   cards, modals
-Background hover:       #1a1a1d   interactive hover state
-Border default:         rgba(255,255,255,0.06)
-Border interactive:     rgba(255,255,255,0.14)
-Text primary:           #f9fafb   headlines, names, important
-Text secondary:         #9ca3af   supporting information
-Text muted:             #6b7280   timestamps, labels, hints
-Warning/overdue:        #f59e0b   amber — never red, never alarming
-Danger:                 #ef4444   destructive actions only
-```
+### The starting palette (override freely)
 
-### Accent (define per product in CLAUDE.md and style.css)
+Dark mode should feel like candlelight, not a cave.
+Light mode should feel like morning light through linen, not a hospital.
+
+Avoid pure black (#000) and pure white (#fff).
+Avoid cold greys — everything should have a hint of warmth.
+
+**Suggested dark base:**
 ```
---accent:               [hex]         primary brand colour
---accent-hover:         brightness(1.1) of accent
---accent-subtle:        rgba version at 0.12 opacity
---accent-text:          text colour on accent background
+#1c1917   warm charcoal (better than cold black)
+#292524   surface cards
+#3c3836   hover states
 ```
 
-### Product accent library
+**Suggested light base:**
 ```
-Stay Close:     #22c55e   pounamu jade (Māori greenstone)
-Job Agent:      #6366f1   indigo (focused, professional)
-Music tool:     #ec4899   pink (expressive, creative)
-Health/wellness:#14b8a6   teal (calm, balanced)
-Finance:        #f59e0b   amber (considered, serious)
+#faf9f7   warm off-white
+#f5f4f0   surface cards
+#ede9e4   hover states
 ```
 
-### Light mode overrides
-```
-Background primary:     #fafafa
-Background surface:     #ffffff
-Background hover:       #f3f4f6
-Border default:         rgba(0,0,0,0.08)
-Border interactive:     rgba(0,0,0,0.16)
-Text primary:           #111827
-Text secondary:         #6b7280
-Text muted:             #9ca3af
-```
+**Accent colour — define per product:**
+Stay Close: #22c55e (pounamu jade — Māori greenstone)
+
+The accent should be used sparingly. One moment of colour is more
+powerful than colour everywhere.
+
+**Warning/overdue:** #f59e0b — amber. Never red. Amber is a quiet
+signal. Red is an alarm. This product doesn't alarm people.
+
+### Colour freedom
+If the product calls for a completely different palette — use it.
+The guidelines above are defaults, not constraints.
 
 ---
 
 ## TYPOGRAPHY
 
-Font: Inter from Google Fonts
-```css
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-font-family: 'Inter', -apple-system, sans-serif;
+Font: Inter (Google Fonts) — reliable, human, clean.
+But if a different typeface serves the product better, use it.
+
+**Scale (adapt freely):**
+```
+App name:      15–17px   weight 500–600
+Page headers:  24–32px   weight 700
+Card names:    16–18px   weight 600
+Body:          14px      weight 400
+Secondary:     13px      weight 400   muted colour
+Labels:        11px      weight 500   uppercase   letter-spacing 0.08em
+Timestamps:    12px      weight 400   muted colour
 ```
 
-Scale:
-```
-App name/wordmark:      15px  weight 500  letter-spacing 0.02em
-Page title:             28px  weight 700
-Section header:         18px  weight 600
-Card title/name:        16px  weight 600
-Body:                   14px  weight 400
-Secondary/supporting:   13px  weight 400  color: text-secondary
-Labels/tags/caps:       11px  weight 500  uppercase  letter-spacing 0.08em
-Micro/timestamps:       12px  weight 400  color: text-muted
-```
-
-Rules:
-- Never go below 11px
-- Never use weight 800 or 900
-- Line height: 1.2 for headlines, 1.6 for body, 1.5 for inputs
-- Sentence case everywhere except tags/labels (those are UPPERCASE)
+**Typography risks worth taking:**
+- A large, expressive number as the hero element
+- A quote or human message in the empty state
+- Mixing weights dramatically within a single element
+- Letting one typographic moment be the signature of the page
 
 ---
 
 ## SPACING
 
-Base unit: 4px. Use multiples only.
-```
-4px   micro gaps (icon to label)
-8px   tight gaps (label to input)
-12px  small gaps (between form fields)
-16px  card padding compact
-20px  card padding standard
-24px  page padding (mobile: 16px)
-32px  modal padding, section gaps
-40px  between major sections
-48px  generous section breathing room
-64px  large vertical gaps
-80px  empty state top margin
-```
+Base unit: 4px. Use multiples.
+When in doubt, add more space. Breathing room is never wasted.
 
-Layout widths:
-```
-760px    personal/intimate tools (Stay Close, journals)
-1080px   dashboards and data tools
-1280px   marketing pages, landing pages
-```
-
----
-
-## BORDER RADIUS
-
-```
-Buttons (primary CTA):  9999px  (pill shape)
-Buttons (secondary):    8px
-Cards:                  12px
-Modals:                 16px
-Inputs:                 8px
-Tags/pills:             9999px
-Avatar circles:         50%
-Small badges:           6px
-```
-
----
-
-## COMPONENTS
-
-### Primary CTA Button
-```css
-background: var(--accent)
-color: var(--accent-text)
-font-size: 13px, font-weight: 600
-padding: 8px 16px
-border-radius: 9999px
-border: none
-transition: filter 150ms ease
-hover: filter brightness(1.08)
-active: transform scale(0.97)
-```
-
-### Secondary Button
-```css
-background: transparent
-border: 1px solid var(--border)
-color: var(--text-secondary)
-border-radius: 8px
-hover: border-color var(--border-active), color var(--text-primary)
-```
-
-### Ghost / Text Button
-```css
-background: transparent
-border: none
-color: var(--accent)
-font-size: 13px
-hover: opacity 0.75
-```
-
-### Form Fields
-```
-Label:   11px uppercase, letter-spacing 0.08em, color text-muted
-Input:   bg var(--bg), border var(--border), border-radius 8px
-         padding 12px 14px, font-size 15px
-         focus: border-color var(--accent)
-         placeholder: color text-muted
-```
-
-### Cards
-```
-background: var(--surface)
-border: 1px solid var(--border)
-border-left: 3px solid transparent  (overdue: var(--warning))
-border-radius: 12px
-padding: 16px 20px
-hover: background var(--surface-hover), translateY(-1px)
-transition: all 150ms ease
-```
-
-### Stats Strip
-```
-Single row, three columns, divided by 1px rgba borders
-No card background — numbers float in space
-Number: 36px weight 700, color text-primary
-        if attention > 0: color var(--warning)
-Label:  11px uppercase letter-spacing 0.08em color text-muted
-```
-
-### Avatar Circles
-```
-Size: 36–40px
-Border-radius: 50%
-Colour: auto-generated from name (see JS utility)
-Initial: first letter, uppercase, font-weight 700
-```
-
-Avatar colour utility (copy into every project):
-```javascript
-function getAvatarColour(name) {
-  const colours = ['#22c55e','#f59e0b','#6366f1','#ec4899','#14b8a6','#f97316'];
-  let hash = 0;
-  for (let i = 0; i < name.length; i++) {
-    hash = name.charCodeAt(i) + ((hash << 5) - hash);
-  }
-  return colours[Math.abs(hash) % colours.length];
-}
-```
-
-### Tag / Pill variants
-```
-font-size: 10px, font-weight: 500, uppercase, letter-spacing 0.06em
-padding: 2px 8px, border-radius: 9999px
-
-Green:    bg rgba(34,197,94,0.12)    text #22c55e
-Amber:    bg rgba(245,158,11,0.12)   text #f59e0b
-Indigo:   bg rgba(99,102,241,0.12)   text #6366f1
-Pink:     bg rgba(236,72,153,0.12)   text #ec4899
-Grey:     bg rgba(107,114,128,0.12)  text #6b7280
-```
-
-### Modal
-```
-Overlay: rgba(0,0,0,0.7), backdrop-filter blur(4px)
-Card: max-width 440px, background var(--surface)
-      border 1px solid var(--border-active)
-      border-radius 16px, padding 32px
-      animation: slideUp 200ms ease
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-```
-
-### Empty State
-```
-margin-top: 80px
-text-align: center
-Primary message: one honest sentence, 15px, color text-muted
-CTA: accent-coloured text link, 13px, "Do the thing →"
-Nothing else. No illustrations unless the product calls for it.
-```
+**Page max-width:** 800px for intimate tools. Don't go wider.
+**Page padding:** 24px (mobile: 16px)
+**Card padding:** At least 20px — cards that feel cramped feel cheap.
+**Between cards:** 10–12px
+**Section gaps:** 40–48px
 
 ---
 
 ## ANIMATION & MOTION
 
-Philosophy: motion should feel inevitable, not decorative.
+Motion is what separates a good app from a great one.
 
-Timing scale:
-```
-150ms ease    hover states, colour transitions
-200ms ease    modals opening, drawers
-300ms ease    page content loading
-400ms ease    stat number count-ups
-60ms          stagger delay per card on load
-```
+**Use animation:**
+- Cards fading up on load (staggered, 60ms delay per card)
+- Stats counting up from 0 on load (400ms)
+- Modal sliding up from bottom (200ms)
+- Hover states lifting cards (translateY -2px)
+- Colour transitions on interactive elements (150ms)
+- "Reach out" button fading in on card hover
 
-Card stagger on page load:
-```javascript
-cards.forEach((card, i) => {
-  card.style.animationDelay = `${i * 60}ms`;
-});
+**Take risks with motion:**
+- A subtle pulse on the accent colour
+- A gentle gradient animation in the background
+- Cards that feel like they breathe
+- An entrance animation that makes the first load feel like an event
 
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-```
-
-Stat count-up:
-```javascript
-function countUp(el, target, duration = 400) {
-  const start = performance.now();
-  function update(now) {
-    const progress = Math.min((now - start) / duration, 1);
-    el.textContent = Math.floor(progress * target);
-    if (progress < 1) requestAnimationFrame(update);
-    else el.textContent = target;
-  }
-  requestAnimationFrame(update);
-}
-```
-
-Hover-reveal elements (e.g. action buttons on cards):
-```css
-.reveal { opacity: 0; transition: opacity 150ms ease; }
-.card:hover .reveal { opacity: 1; }
-```
-
-Rules:
+**Rules:**
 - Only animate: opacity, transform, filter, color, background
-- Never animate: width, height, top, left, display
+- Never animate: width, height, position properties
 - Always respect prefers-reduced-motion
 
 ```css
@@ -318,77 +140,83 @@ Rules:
 
 ---
 
-## DARK / LIGHT MODE
+## COMPONENTS
 
-Add to CSS root:
-```css
-:root { color-scheme: light dark; }
-```
+### Cards
+The card is the heart of most products. Make it feel good to look at.
 
-Body class toggle: `class="dark"` or `class="light"`
+Minimum requirements:
+- Enough padding (20px+)
+- A clear visual hierarchy (name first, details second)
+- A hover state that responds to the user
+- An overdue signal that's quiet (amber left border, nothing more)
 
-JS utility:
-```javascript
-function toggleTheme() {
-  const isDark = document.body.classList.contains('dark');
-  document.body.classList.toggle('dark', !isDark);
-  document.body.classList.toggle('light', isDark);
-  localStorage.setItem('theme', isDark ? 'light' : 'dark');
-}
+Beyond that — design freedom. Try different layouts. Try horizontal,
+try vertical. Try something unexpected.
 
-// On page load
-const saved = localStorage.getItem('theme') || 'dark';
-document.body.classList.add(saved);
-```
+### Buttons
+Primary CTA: rounded pill, accent colour, confident.
+The button should feel like an invitation, not a command.
 
-Toggle button: small sun/moon or ◐ icon, top right of header, no label.
+### Empty states
+This is your most important design moment. Don't waste it with "No
+items found." Write something human. Make it feel like the product
+is talking to the person.
+
+Examples:
+- "The people who matter deserve to be remembered."
+- "Your people are waiting to be added."
+- "No one's here yet. Who do you miss?"
 
 ---
 
-## HEADER PATTERN
+## DARK / LIGHT MODE
 
-Always the same structure:
-```html
-<header class="header">
-  <div class="brand">
-    [icon] AppName
-    <span class="tagline">One line. What this is for.</span>
-  </div>
-  <div class="header-actions">
-    [theme toggle]
-    [primary CTA]
-  </div>
-</header>
-```
+Both modes must feel intentional and beautiful.
+Dark ≠ black. Light ≠ white. Both have warmth.
 
-Height: 64px
-Position: sticky top
-Border-bottom: 1px solid var(--border)
+Toggle: small sun/moon icon, top right, no label needed.
+Store preference in localStorage.
 
 ---
 
 ## WHAT CHANGES PER PRODUCT
 
-1. --accent colour (define in style.css :root)
-2. App name + icon in header
+1. Accent colour
+2. App name + icon
 3. Tagline
-4. Empty state message
-5. The feeling sentence (in CLAUDE.md)
-6. Max-width (760 / 1080 / 1280)
-7. Animation intensity — dial up for playful, dial down for serious
-8. Table names and API routes in server.js
-
-Everything else: inherit from this file.
+4. Empty state copy
+5. The feeling sentence
+6. Background warmth (cooler for professional tools, warmer for personal)
+7. Animation intensity (more for playful, less for serious)
+8. Typography expression (more expressive for creative tools)
 
 ---
 
-## THE QUALITY CHECK
+## THE ONLY QUESTIONS THAT MATTER
 
 Before shipping any screen:
-- Is every element here for a reason?
-- Does the spacing breathe?
-- Does colour draw the eye to the right thing?
-- Would someone feel something opening this?
-- Does it look like something a person made, not a template?
 
-All five yes → ship it.
+1. Would someone screenshot this?
+2. Does it feel like a person made it?
+3. Does every element earn its place?
+4. Does it make you feel something?
+
+All four yes → ship it.
+Any no → keep going.
+
+---
+
+## A NOTE ON CREATIVE RISK
+
+The worst thing a design can be is forgettable.
+
+Safe choices produce safe results. A near-black background with a
+green accent and Inter font is safe. It works. But it doesn't
+surprise anyone.
+
+Take one real risk per product. One thing that makes someone say
+"I've never seen that in an app like this before." That's the thing
+people remember. That's what gets shared.
+
+Find that thing. Then build everything else quietly around it.

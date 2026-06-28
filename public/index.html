@@ -9,31 +9,34 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg:             #1a1a2e;
-      --surface:        #21213a;
-      --surface-hover:  #26263f;
-      --border:         rgba(255,255,255,0.09);
-      --border-active:  rgba(255,255,255,0.18);
+      --bg:             #1c1917;
+      --surface:        #292524;
+      --surface-hover:  #3c3836;
+      --border:         rgba(255,255,255,0.08);
+      --border-active:  rgba(255,255,255,0.16);
       --accent:         #22c55e;
-      --accent-subtle:  rgba(34,197,94,0.10);
+      --accent-subtle:  rgba(34,197,94,0.12);
       --accent-text:    #000;
-      --text-primary:   #f9fafb;
-      --text-secondary: #9ca3af;
-      --text-muted:     #6b7280;
+      --text-primary:   #f5f0eb;
+      --text-secondary: #a8a29e;
+      --text-muted:     #78716c;
       --warning:        #f59e0b;
+      --warning-subtle: rgba(245,158,11,0.06);
       --danger:         #ef4444;
-      color-scheme: light dark;
+      color-scheme: dark;
     }
 
     body.light {
-      --bg:             #fafafa;
-      --surface:        #ffffff;
-      --surface-hover:  #f3f4f6;
-      --border:         rgba(0,0,0,0.08);
-      --border-active:  rgba(0,0,0,0.16);
-      --text-primary:   #111827;
-      --text-secondary: #6b7280;
-      --text-muted:     #9ca3af;
+      --bg:             #faf9f7;
+      --surface:        #f5f4f0;
+      --surface-hover:  #ede9e4;
+      --border:         rgba(0,0,0,0.07);
+      --border-active:  rgba(0,0,0,0.14);
+      --text-primary:   #1c1917;
+      --text-secondary: #57534e;
+      --text-muted:     #a8a29e;
+      --warning-subtle: rgba(245,158,11,0.09);
+      color-scheme: light;
     }
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -56,7 +59,7 @@
     }
 
     .header-inner {
-      max-width: 860px;
+      max-width: 800px;
       margin: 0 auto;
       height: 64px;
       display: flex;
@@ -76,7 +79,7 @@
     .brand-text { display: flex; flex-direction: column; gap: 3px; }
 
     .brand-name {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
       letter-spacing: -0.01em;
       color: var(--text-primary);
@@ -100,7 +103,6 @@
       border: 1px solid var(--border);
       border-radius: 8px;
       color: var(--text-muted);
-      font-size: 14px;
       width: 34px;
       height: 34px;
       display: flex;
@@ -108,7 +110,6 @@
       justify-content: center;
       cursor: pointer;
       transition: border-color 150ms ease, color 150ms ease;
-      font-family: inherit;
     }
 
     .btn-theme:hover {
@@ -116,12 +117,17 @@
       color: var(--text-primary);
     }
 
+    .icon-sun  { display: block; }
+    .icon-moon { display: none;  }
+    body.light .icon-sun  { display: none;  }
+    body.light .icon-moon { display: block; }
+
     .btn-primary {
       background: var(--accent);
       color: var(--accent-text);
       border: none;
       border-radius: 9999px;
-      padding: 8px 14px;
+      padding: 9px 16px;
       font-size: 13px;
       font-weight: 600;
       font-family: inherit;
@@ -135,7 +141,7 @@
 
     /* ── Page ── */
     .page {
-      max-width: 860px;
+      max-width: 800px;
       margin: 0 auto;
       padding: 0 24px 80px;
     }
@@ -177,7 +183,7 @@
     #cards-list {
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 10px;
     }
 
     .card {
@@ -191,21 +197,29 @@
       justify-content: space-between;
       transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
       animation: fadeUp 0.4s ease-out both;
+      animation-delay: var(--card-delay, 0ms);
     }
 
     .card:hover {
       background: var(--surface-hover);
-      border-color: rgba(255,255,255,0.14);
+      border-color: rgba(255,255,255,0.13);
       transform: translateY(-2px);
     }
 
+    body.light .card:hover {
+      border-color: rgba(0,0,0,0.12);
+    }
+
+    /* The creative risk: overdue cards breathe */
     .card.overdue {
       border-left-color: var(--warning);
-      background: linear-gradient(90deg, rgba(245,158,11,0.06) 0%, var(--surface) 32%);
+      background: linear-gradient(90deg, var(--warning-subtle) 0%, var(--surface) 32%);
+      animation: fadeUp 0.4s ease-out both, breathe 4s ease-in-out infinite;
+      animation-delay: var(--card-delay, 0ms), calc(var(--card-delay, 0ms) + 600ms);
     }
 
     .card.overdue:hover {
-      background: linear-gradient(90deg, rgba(245,158,11,0.08) 0%, var(--surface-hover) 32%);
+      background: linear-gradient(90deg, rgba(245,158,11,0.1) 0%, var(--surface-hover) 32%);
     }
 
     @keyframes fadeUp {
@@ -213,20 +227,26 @@
       to   { opacity: 1; transform: translateY(0); }
     }
 
+    @keyframes breathe {
+      0%, 100% { box-shadow: none; }
+      50%       { box-shadow: 0 0 0 1px rgba(245,158,11,0.18), 0 6px 24px rgba(245,158,11,0.1); }
+    }
+
+    /* Card internals */
     .card-left {
       display: flex;
       align-items: center;
-      gap: 14px;
+      gap: 16px;
     }
 
     .avatar {
-      width: 32px;
-      height: 32px;
+      width: 36px;
+      height: 36px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
       flex-shrink: 0;
       letter-spacing: 0.02em;
@@ -239,7 +259,7 @@
     }
 
     .c-name {
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 600;
       color: var(--text-primary);
       letter-spacing: -0.01em;
@@ -253,7 +273,6 @@
       line-height: 1;
     }
 
-    /* Card right */
     .card-right {
       display: flex;
       flex-direction: column;
@@ -265,15 +284,14 @@
 
     .c-days {
       font-size: 12px;
-      color: var(--text-secondary);
       line-height: 1;
       white-space: nowrap;
     }
 
-    .c-days.no-contact {
-      color: var(--text-muted);
-      font-style: italic;
-    }
+    .status-fresh { color: var(--accent); }
+    .status-ok    { color: var(--text-secondary); }
+    .status-warn  { color: var(--warning); }
+    .status-none  { color: var(--text-muted); font-style: italic; }
 
     .card-actions {
       display: flex;
@@ -310,9 +328,9 @@
     }
 
     .empty-msg {
-      font-size: 15px;
+      font-size: 16px;
       color: var(--text-muted);
-      margin-bottom: 12px;
+      margin-bottom: 14px;
       line-height: 1.6;
     }
 
@@ -332,7 +350,7 @@
     #overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.72);
+      background: rgba(0,0,0,0.65);
       backdrop-filter: blur(4px);
       -webkit-backdrop-filter: blur(4px);
       display: flex;
@@ -396,7 +414,7 @@
     .modal-sub {
       font-size: 13px;
       color: var(--text-muted);
-      line-height: 1.55;
+      line-height: 1.6;
       margin-bottom: 28px;
     }
 
@@ -439,7 +457,7 @@
     .field textarea:focus { border-color: var(--accent); }
 
     .field select {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236b7280' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%2378716c' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
       background-repeat: no-repeat;
       background-position: right 14px center;
       padding-right: 36px;
@@ -491,7 +509,7 @@
     <div class="brand">
       <svg class="brand-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M8 1.5C5 1.5 2.5 4 2.5 7C2.5 10.5 8 14.5 8 14.5C8 14.5 13.5 10.5 13.5 7C13.5 4 11 1.5 8 1.5Z" fill="#22c55e"/>
-        <path d="M8 4.5V10.5M8 4.5C8 4.5 6 6.5 6 8.5" stroke="rgba(0,0,0,0.45)" stroke-width="1" stroke-linecap="round"/>
+        <path d="M8 4.5V10.5M8 4.5C8 4.5 6 6.5 6 8.5" stroke="rgba(0,0,0,0.4)" stroke-width="1" stroke-linecap="round"/>
       </svg>
       <div class="brand-text">
         <div class="brand-name">Stay Close</div>
@@ -499,7 +517,24 @@
       </div>
     </div>
     <div class="header-actions">
-      <button class="btn-theme" onclick="toggleTheme()" title="Toggle theme">◐</button>
+      <button class="btn-theme" onclick="toggleTheme()" aria-label="Toggle theme">
+        <!-- sun: shown in dark mode, click to go light -->
+        <svg class="icon-sun" width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+          <circle cx="7.5" cy="7.5" r="2.5"/>
+          <line x1="7.5" y1="1"    x2="7.5" y2="2.5"/>
+          <line x1="7.5" y1="12.5" x2="7.5" y2="14"/>
+          <line x1="1"   y1="7.5"  x2="2.5" y2="7.5"/>
+          <line x1="12.5" y1="7.5" x2="14"  y2="7.5"/>
+          <line x1="3"   y1="3"    x2="4.1" y2="4.1"/>
+          <line x1="10.9" y1="10.9" x2="12" y2="12"/>
+          <line x1="12"  y1="3"    x2="10.9" y2="4.1"/>
+          <line x1="4.1" y1="10.9" x2="3"   y2="12"/>
+        </svg>
+        <!-- moon: shown in light mode, click to go dark -->
+        <svg class="icon-moon" width="13" height="13" viewBox="0 0 13 13" fill="currentColor">
+          <path d="M11 7.3A5 5 0 0 1 5.7 2a5 5 0 1 0 5.3 5.3z"/>
+        </svg>
+      </button>
       <button class="btn-primary" onclick="openModal()">+ Add someone</button>
     </div>
   </div>
@@ -525,7 +560,7 @@
   <div id="cards-list"></div>
 
   <div id="empty-state">
-    <p class="empty-msg">The people who matter deserve to be remembered.</p>
+    <p class="empty-msg">No one's here yet.<br>Who do you miss?</p>
     <button class="empty-cta" onclick="openModal()">Add your first person →</button>
   </div>
 
@@ -576,13 +611,14 @@
     localStorage.setItem('sc-theme', isDark ? 'light' : 'dark');
   }
 
+  // Warm avatar palette — dark backgrounds, warm foregrounds
   const AVATAR_PALETTE = [
-    { bg: '#1e3a5f', fg: '#93c5fd' },
-    { bg: '#14532d', fg: '#86efac' },
-    { bg: '#4c1d95', fg: '#c4b5fd' },
-    { bg: '#7c2d12', fg: '#fca5a5' },
-    { bg: '#164e63', fg: '#67e8f9' },
-    { bg: '#3b0764', fg: '#f0abfc' },
+    { bg: '#3d2b1f', fg: '#fdba74' },
+    { bg: '#1f3320', fg: '#86efac' },
+    { bg: '#3a1f2e', fg: '#f9a8d4' },
+    { bg: '#1f2a3d', fg: '#93c5fd' },
+    { bg: '#3d3020', fg: '#fcd34d' },
+    { bg: '#2a1f3d', fg: '#c4b5fd' },
   ];
 
   function avatarColour(name) {
@@ -602,11 +638,14 @@
     return Math.floor((Date.now() - new Date(d)) / 86400000);
   }
 
-  function daysText(days) {
-    if (days === null) return { text: 'No contact yet', cls: 'no-contact' };
-    if (days === 0)    return { text: 'Spoke today',    cls: '' };
-    if (days === 1)    return { text: 'Spoke yesterday',cls: '' };
-    return { text: `${days} days since contact`, cls: '' };
+  function daysStatus(days) {
+    if (days === null)  return { text: 'No contact yet', cls: 'status-none' };
+    if (days === 0)     return { text: 'Spoke today',    cls: 'status-fresh' };
+    if (days === 1)     return { text: 'Yesterday',      cls: 'status-fresh' };
+    if (days <= 6)      return { text: `${days} days ago`, cls: 'status-ok' };
+    const months = Math.floor(days / 30);
+    if (months >= 1)    return { text: `${months} month${months > 1 ? 's' : ''} ago`, cls: 'status-warn' };
+    return { text: `${days} days ago`, cls: 'status-warn' };
   }
 
   function esc(s) {
@@ -634,11 +673,11 @@
     const overdue = days === null || days >= 7;
     const rel     = f.relationship || 'Mate';
     const colour  = avatarColour(f.name);
-    const status  = daysText(days);
+    const status  = daysStatus(days);
 
     const card = document.createElement('div');
     card.className = 'card' + (overdue ? ' overdue' : '');
-    card.style.animationDelay = `${i * 80}ms`;
+    card.style.setProperty('--card-delay', `${i * 80}ms`);
 
     card.innerHTML = `
       <div class="card-left">
@@ -649,7 +688,7 @@
         </div>
       </div>
       <div class="card-right">
-        <div class="c-days${status.cls ? ' ' + status.cls : ''}">${status.text}</div>
+        <div class="c-days ${status.cls}">${status.text}</div>
         <div class="card-actions">
           <button class="reveal btn-remove">Remove</button>
           <button class="reveal btn-checkin">Reach out →</button>
