@@ -2,7 +2,7 @@ import { Sun, Moon } from 'lucide-react'
 
 export default function Header({ theme, onToggleTheme, onAdd }) {
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--sc-border)]" style={{ background: 'var(--sc-bg)' }}>
+    <header className="sticky top-0 z-50 border-b border-[var(--sc-border)]" style={{ backgroundColor: '#1c1917' }}>
       <div className="max-w-[800px] mx-auto h-16 flex items-center justify-between px-6">
 
         <div className="flex items-center gap-2.5">

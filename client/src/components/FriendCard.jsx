@@ -10,8 +10,8 @@ export default function FriendCard({ friend, index, onCheckin, onRemove }) {
 
   return (
     <div
-      className={`sc-card flex items-center justify-between px-7 py-6${overdue ? ' overdue' : ''}`}
-      style={{ '--card-delay': `${index * 80}ms` }}
+      className={`sc-card flex items-center justify-between px-8 py-7${overdue ? ' overdue' : ''}`}
+      style={{ '--card-delay': `${index * 80}ms`, backgroundColor: '#292524' }}
     >
       {/* Watermark initial */}
       <div className="sc-watermark">{wm}</div>
