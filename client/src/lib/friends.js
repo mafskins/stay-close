@@ -25,16 +25,25 @@ export function daysSince(d) {
 }
 
 export function daysStatus(days) {
-  if (days === null)  return { text: 'No contact yet',  cls: 'text-[var(--sc-text-muted)] italic' }
-  if (days === 0)     return { text: 'Spoke today',     cls: 'text-[var(--sc-accent)]' }
-  if (days === 1)     return { text: 'Yesterday',       cls: 'text-[var(--sc-accent)]' }
-  if (days <= 6)      return { text: `${days} days ago`, cls: 'text-[var(--sc-text-sec)]' }
+  if (days === null) return { text: 'No contact yet', type: 'none' }
+  if (days === 0)    return { text: 'Spoke today',    type: 'fresh' }
+  if (days === 1)    return { text: 'Yesterday',      type: 'fresh' }
+  if (days <= 6)     return { text: `${days} days ago`, type: 'ok' }
   const months = Math.floor(days / 30)
-  if (months >= 1)    return { text: `${months} month${months > 1 ? 's' : ''} ago`, cls: 'text-[var(--sc-warning)]' }
-  return { text: `${days} days ago`, cls: 'text-[var(--sc-warning)]' }
+  if (months >= 1)   return { text: `${months} month${months > 1 ? 's' : ''} ago`, type: 'warn' }
+  return { text: `${days} days ago`, type: 'warn' }
 }
 
 export function isOverdue(lastContacted) {
   const d = daysSince(lastContacted)
   return d === null || d >= 7
+}
+
+export function statusColor(type, t) {
+  switch (type) {
+    case 'fresh': return t.accent
+    case 'ok':    return t.textSec
+    case 'warn':  return t.warning
+    default:      return t.muted
+  }
 }

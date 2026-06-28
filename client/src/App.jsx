@@ -3,17 +3,51 @@ import Header from './components/Header'
 import Stats from './components/Stats'
 import FriendCard from './components/FriendCard'
 import AddFriendModal from './components/AddFriendModal'
+import './index.css'
+
+const DARK = {
+  bg:          '#1c1917',
+  card:        '#292524',
+  cardHover:   '#3c3836',
+  border:      'rgba(255,220,160,0.09)',
+  borderAct:   'rgba(255,220,160,0.18)',
+  text:        '#f5f0eb',
+  textSec:     '#a8a29e',
+  muted:       '#78716c',
+  accent:      '#22c55e',
+  warning:     '#f59e0b',
+  warnSub:     'rgba(245,158,11,0.07)',
+  danger:      '#ef4444',
+}
+
+const LIGHT = {
+  bg:          '#faf9f7',
+  card:        '#ffffff',
+  cardHover:   '#ede9e4',
+  border:      'rgba(0,0,0,0.07)',
+  borderAct:   'rgba(0,0,0,0.14)',
+  text:        '#1c1917',
+  textSec:     '#57534e',
+  muted:       '#a8a29e',
+  accent:      '#22c55e',
+  warning:     '#f59e0b',
+  warnSub:     'rgba(245,158,11,0.09)',
+  danger:      '#ef4444',
+}
 
 export default function App() {
   const [friends, setFriends] = useState([])
-  const [theme, setTheme] = useState(() => localStorage.getItem('sc-theme') || 'dark')
+  const [mode, setMode] = useState(() => localStorage.getItem('sc-theme') || 'dark')
   const [modalOpen, setModalOpen] = useState(false)
 
+  const t = mode === 'dark' ? DARK : LIGHT
+
   useEffect(() => {
-    document.body.style.backgroundColor = '#1c1917'
-    document.documentElement.className = theme
-    localStorage.setItem('sc-theme', theme)
-  }, [theme])
+    document.body.style.backgroundColor = t.bg
+    document.body.style.color = t.text
+    document.documentElement.style.backgroundColor = t.bg
+    localStorage.setItem('sc-theme', mode)
+  }, [mode, t.bg, t.text])
 
   const loadFriends = useCallback(async () => {
     try {
@@ -25,7 +59,7 @@ export default function App() {
   useEffect(() => { loadFriends() }, [loadFriends])
 
   function toggleTheme() {
-    setTheme(t => t === 'dark' ? 'light' : 'dark')
+    setMode(m => m === 'dark' ? 'light' : 'dark')
   }
 
   async function handleCheckin(id) {
@@ -50,51 +84,51 @@ export default function App() {
     }
   }
 
-  const isEmpty = friends.length === 0
-
   return (
-    <div style={{ backgroundColor: '#1c1917', minHeight: '100vh', color: '#f5f0eb' }}>
-      <Header theme={theme} onToggleTheme={toggleTheme} onAdd={() => setModalOpen(true)} />
+    <div style={{ backgroundColor: t.bg, minHeight: '100vh', color: t.text }}>
 
-      <main className="max-w-[800px] mx-auto px-6 pb-20">
-        <Stats friends={friends} />
+      <Header t={t} mode={mode} onToggleTheme={toggleTheme} onAdd={() => setModalOpen(true)} />
 
-        {isEmpty ? (
-          <div className="text-center mt-20">
-            <p
-              className="text-base mb-3.5 leading-relaxed"
-              style={{ color: 'var(--sc-text-muted)' }}
-            >
+      <main style={{ maxWidth: 800, margin: '0 auto', padding: '0 24px 80px' }}>
+
+        <Stats t={t} friends={friends} />
+
+        {friends.length === 0 ? (
+          <div style={{ textAlign: 'center', marginTop: 80 }}>
+            <p style={{ color: t.muted, fontSize: 16, lineHeight: 1.6, marginBottom: 14, margin: '0 0 14px' }}>
               No one's here yet.<br />Who do you miss?
             </p>
             <button
               onClick={() => setModalOpen(true)}
-              className="text-sm bg-transparent border-none cursor-pointer transition-opacity duration-150 hover:opacity-75"
-              style={{ color: 'var(--sc-accent)' }}
+              style={{ color: t.accent, fontSize: 13, background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'inherit' }}
             >
               Add your first person →
             </button>
           </div>
         ) : (
-          <div className="flex flex-col gap-[10px]">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             {friends.map((f, i) => (
               <FriendCard
                 key={f.id}
                 friend={f}
                 index={i}
+                t={t}
                 onCheckin={() => handleCheckin(f.id)}
                 onRemove={() => handleRemove(f.id)}
               />
             ))}
           </div>
         )}
+
       </main>
 
       <AddFriendModal
         open={modalOpen}
         onOpenChange={setModalOpen}
         onAdd={handleAdd}
+        t={t}
       />
+
     </div>
   )
 }

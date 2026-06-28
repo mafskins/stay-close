@@ -1,61 +1,139 @@
-import { avatarColor, initials, daysSince, daysStatus, isOverdue } from '@/lib/friends'
+import { useState } from 'react'
+import { avatarColor, initials, daysSince, daysStatus, isOverdue, statusColor } from '@/lib/friends'
 
-export default function FriendCard({ friend, index, onCheckin, onRemove }) {
+export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
+  const [hovered, setHovered] = useState(false)
+
   const overdue = isOverdue(friend.last_contacted)
   const days    = daysSince(friend.last_contacted)
   const status  = daysStatus(days)
+  const sColor  = statusColor(status.type, t)
   const color   = avatarColor(friend.name)
   const rel     = friend.relationship || 'Mate'
   const wm      = (friend.name.trim()[0] || '?').toUpperCase()
 
+  const bg = overdue
+    ? `linear-gradient(90deg, ${hovered ? 'rgba(245,158,11,0.10)' : t.warnSub} 0%, ${hovered ? t.cardHover : t.card} 32%)`
+    : hovered ? t.cardHover : t.card
+
   return (
     <div
-      className={`sc-card flex items-center justify-between px-8 py-7${overdue ? ' overdue' : ''}`}
-      style={{ '--card-delay': `${index * 80}ms`, backgroundColor: '#292524' }}
+      className={`sc-card${overdue ? ' overdue' : ''}`}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{
+        '--card-delay': `${index * 80}ms`,
+        background: bg,
+        borderTop:    `1px solid ${t.border}`,
+        borderRight:  `1px solid ${t.border}`,
+        borderBottom: `1px solid ${t.border}`,
+        borderLeft:   `${hovered ? 4 : 3}px solid ${overdue ? t.warning : 'transparent'}`,
+        borderRadius: 12,
+        padding: '24px 28px',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        transition: 'background 150ms ease, border-left-width 150ms ease, transform 150ms ease',
+        transform: hovered ? 'translateY(-3px)' : 'none',
+      }}
     >
-      {/* Watermark initial */}
-      <div className="sc-watermark">{wm}</div>
+      {/* Watermark */}
+      <div className="sc-watermark" style={{ color: t.text }}>{wm}</div>
 
       {/* Left: avatar + name */}
-      <div className="flex items-center gap-4 relative z-10">
-        <div
-          className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold shrink-0 tracking-wide"
-          style={{ background: color.bg, color: color.fg }}
-        >
+      <div style={{ display: 'flex', alignItems: 'center', gap: 16, position: 'relative', zIndex: 1 }}>
+        <div style={{
+          width: 36,
+          height: 36,
+          borderRadius: '50%',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: 12,
+          fontWeight: 700,
+          flexShrink: 0,
+          letterSpacing: '0.02em',
+          background: color.bg,
+          color: color.fg,
+        }}>
           {initials(friend.name)}
         </div>
-        <div className="flex flex-col gap-[5px]">
-          <div
-            className="text-[15px] font-semibold tracking-tight leading-none capitalize"
-            style={{ color: 'var(--sc-text)' }}
-          >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 5 }}>
+          <div style={{
+            fontSize: 15,
+            fontWeight: 600,
+            color: t.text,
+            letterSpacing: '-0.01em',
+            lineHeight: 1,
+            textTransform: 'capitalize',
+          }}>
             {friend.name}
           </div>
-          <div className="text-xs leading-none" style={{ color: 'var(--sc-text-muted)' }}>
+          <div style={{ fontSize: 12, color: t.muted, lineHeight: 1 }}>
             · {rel}
           </div>
         </div>
       </div>
 
       {/* Right: status + actions */}
-      <div className="flex flex-col items-end gap-2 shrink-0 ml-4 relative z-10">
-        <div className={`text-xs leading-none whitespace-nowrap ${status.cls}`}>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'flex-end',
+        gap: 8,
+        flexShrink: 0,
+        marginLeft: 16,
+        position: 'relative',
+        zIndex: 1,
+      }}>
+        <div style={{
+          fontSize: 12,
+          lineHeight: 1,
+          color: sColor,
+          whiteSpace: 'nowrap',
+          fontStyle: status.type === 'none' ? 'italic' : 'normal',
+        }}>
           {status.text}
         </div>
-        <div className="flex items-center gap-4">
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
           <button
             onClick={onRemove}
-            className="sc-card-action text-xs font-medium bg-transparent border-none cursor-pointer leading-none whitespace-nowrap transition-colors duration-150"
-            style={{ color: 'var(--sc-text-muted)' }}
-            onMouseEnter={e => e.currentTarget.style.color = 'var(--sc-danger)'}
-            onMouseLeave={e => e.currentTarget.style.color = 'var(--sc-text-muted)'}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: 12,
+              fontWeight: 500,
+              fontFamily: 'inherit',
+              cursor: 'pointer',
+              padding: 0,
+              opacity: hovered ? 1 : 0,
+              transition: 'opacity 150ms ease, color 150ms ease',
+              lineHeight: 1,
+              color: t.muted,
+              whiteSpace: 'nowrap',
+            }}
+            onMouseEnter={e => e.currentTarget.style.color = t.danger}
+            onMouseLeave={e => e.currentTarget.style.color = t.muted}
           >
             Remove
           </button>
           <button
             onClick={onCheckin}
-            className="sc-card-action text-xs font-medium bg-transparent border-none cursor-pointer leading-none whitespace-nowrap active:scale-[0.97] transition-transform duration-75"
-            style={{ color: 'var(--sc-accent)' }}
+            style={{
+              background: 'none',
+              border: 'none',
+              fontSize: 12,
+              fontWeight: 500,
+              fontFamily: 'inherit',
+              cursor: 'pointer',
+              padding: 0,
+              opacity: hovered ? 1 : 0,
+              transition: 'opacity 150ms ease',
+              lineHeight: 1,
+              color: t.accent,
+              whiteSpace: 'nowrap',
+            }}
           >
             Reach out →
           </button>
