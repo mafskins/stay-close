@@ -32,6 +32,7 @@ function Stat({ value, label, color, glow, t, first }) {
     <div style={{ paddingLeft: first ? 0 : 40 }}>
       <div
         ref={ref}
+        className={glow ? 'sc-stat-breathe' : ''}
         style={{
           fontSize: 40,
           fontWeight: 700,
@@ -39,7 +40,6 @@ function Stat({ value, label, color, glow, t, first }) {
           lineHeight: 1,
           color,
           marginBottom: 10,
-          textShadow: glow ? '0 0 20px rgba(245,158,11,0.4)' : undefined,
         }}
       >
         0

@@ -1,25 +1,49 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { avatarColor, initials, daysSince, daysStatus, isOverdue, statusColor, formatDate } from '@/lib/friends'
 
-export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
+export default function FriendCard({ friend, index, t, isNew, onCheckin, onRemove }) {
   const [hovered, setHovered] = useState(false)
+  const [flashing, setFlashing] = useState(false)
 
-  const overdue  = isOverdue(friend.last_contacted)
-  const days     = daysSince(friend.last_contacted)
-  const status   = daysStatus(days)
-  const sColor   = statusColor(status.type, t)
-  const color    = avatarColor(friend.name)
-  const rel      = friend.relationship || 'Mate'
-  const wm       = (friend.name.trim()[0] || '?').toUpperCase()
-  const dateStr  = formatDate(friend.last_contacted)
+  // Capture isNew at mount time — stays true permanently for cards added this session.
+  // This makes the slideIn inline style stable so it never restarts after isNew clears.
+  const mountedAsNew = useRef(isNew)
+
+  const overdue = isOverdue(friend.last_contacted)
+  const days    = daysSince(friend.last_contacted)
+  const status  = daysStatus(days)
+  const sColor  = statusColor(status.type, t)
+  const color   = avatarColor(friend.name)
+  const rel     = friend.relationship || 'Mate'
+  const wm      = (friend.name.trim()[0] || '?').toUpperCase()
+  const dateStr = formatDate(friend.last_contacted)
+
+  function handleCheckinClick() {
+    setFlashing(true)
+    setTimeout(() => setFlashing(false), 700)
+    onCheckin()
+  }
 
   const bg = overdue
     ? `linear-gradient(90deg, ${hovered ? 'rgba(245,158,11,0.10)' : t.warnSub} 0%, ${hovered ? t.cardHover : t.card} 32%)`
     : hovered ? t.cardHover : t.card
 
+  // New cards slide in from further below with a spring easing,
+  // overriding the default sc-card fadeUp via inline style.
+  // fill: both keeps the card visible after the animation ends.
+  const newCardAnim = mountedAsNew.current ? {
+    animationName: 'slideIn',
+    animationDuration: '0.5s',
+    animationTimingFunction: 'cubic-bezier(0.34, 1.56, 0.64, 1)',
+    animationFillMode: 'both',
+    animationDelay: '0ms',
+  } : {}
+
+  const cardClass = `sc-card${overdue ? ' overdue' : ''}`
+
   return (
     <div
-      className={`sc-card${overdue ? ' overdue' : ''}`}
+      className={cardClass}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
       style={{
@@ -37,12 +61,13 @@ export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
         cursor: 'default',
         transition: 'transform 150ms ease, background 150ms ease',
         transform: hovered ? 'translateY(-3px)' : 'translateY(0)',
+        ...newCardAnim,
       }}
     >
-      {/* Watermark letter */}
+      {/* Watermark — first letter of name, large + faint */}
       <div className="sc-watermark" style={{ color: t.text }}>{wm}</div>
 
-      {/* Left: avatar + name + relationship */}
+      {/* Left: coloured avatar circle + name + relationship */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 16, position: 'relative', zIndex: 1 }}>
         <div style={{
           width: 40,
@@ -76,7 +101,7 @@ export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
         </div>
       </div>
 
-      {/* Right: status text + date + hover buttons */}
+      {/* Right: status + date + hover buttons */}
       <div style={{
         display: 'flex',
         flexDirection: 'column',
@@ -87,7 +112,7 @@ export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
         position: 'relative',
         zIndex: 1,
       }}>
-        {/* Status label e.g. "Spoke today", "3 days ago", "No contact yet" */}
+        {/* "Spoke today" / "3 days ago" / "No contact yet" */}
         <div style={{
           fontSize: 12,
           lineHeight: 1,
@@ -98,24 +123,19 @@ export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
           {status.text}
         </div>
 
-        {/* Actual date e.g. "28 Jun 2026" */}
+        {/* Actual date e.g. "28 Jun 2026" — muted, small */}
         {dateStr && (
-          <div style={{
-            fontSize: 11,
-            lineHeight: 1,
-            color: t.muted,
-            whiteSpace: 'nowrap',
-          }}>
+          <div style={{ fontSize: 11, lineHeight: 1, color: t.muted, whiteSpace: 'nowrap' }}>
             {dateStr}
           </div>
         )}
 
-        {/* Hover-reveal action buttons */}
+        {/* Hover-reveal buttons — hidden by default, appear on hover */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           gap: 16,
-          marginTop: 4,
+          marginTop: 2,
           opacity: hovered ? 1 : 0,
           pointerEvents: hovered ? 'auto' : 'none',
           transition: 'opacity 150ms ease',
@@ -140,8 +160,10 @@ export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
           >
             Remove
           </button>
+
+          {/* Reach out — flashes green + shows ✓ briefly on click */}
           <button
-            onClick={onCheckin}
+            onClick={handleCheckinClick}
             style={{
               background: 'none',
               border: 'none',
@@ -151,11 +173,12 @@ export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
               cursor: 'pointer',
               padding: 0,
               lineHeight: 1,
-              color: t.accent,
+              color: flashing ? '#4ade80' : t.accent,
               whiteSpace: 'nowrap',
+              transition: 'color 150ms ease',
             }}
           >
-            Reach out →
+            {flashing ? '✓ Done' : 'Reach out →'}
           </button>
         </div>
       </div>

@@ -1,6 +1,6 @@
 import { Sun, Moon } from 'lucide-react'
 
-export default function Header({ t, mode, onToggleTheme, onAdd }) {
+export default function Header({ t, mode, greeting, onToggleTheme, onAdd }) {
   return (
     <header style={{
       position: 'sticky',
@@ -8,7 +8,16 @@ export default function Header({ t, mode, onToggleTheme, onAdd }) {
       zIndex: 50,
       backgroundColor: t.bg,
       borderBottom: `1px solid ${t.border}`,
+      overflow: 'hidden',
     }}>
+      {/* Pounamu glow — faint green light through the header, like light through greenstone */}
+      <div style={{
+        position: 'absolute',
+        inset: 0,
+        background: 'radial-gradient(ellipse 120% 180% at 50% -40%, rgba(34,197,94,0.08) 0%, transparent 65%)',
+        pointerEvents: 'none',
+      }} />
+
       <div style={{
         maxWidth: 800,
         margin: '0 auto',
@@ -17,6 +26,7 @@ export default function Header({ t, mode, onToggleTheme, onAdd }) {
         alignItems: 'center',
         justifyContent: 'space-between',
         padding: '0 24px',
+        position: 'relative',
       }}>
 
         {/* Brand */}
@@ -30,7 +40,7 @@ export default function Header({ t, mode, onToggleTheme, onAdd }) {
               Stay Close
             </span>
             <span style={{ fontSize: 11, color: t.muted, lineHeight: 1 }}>
-              The people who matter, remembered.
+              {greeting}
             </span>
           </div>
         </div>

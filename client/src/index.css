@@ -15,8 +15,15 @@ html.light body { background-color: #faf9f7; }
 
 #root { min-height: 100vh; }
 
+/* ── Keyframes ───────────────────────────────────────── */
+
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(16px); }
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(44px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
@@ -26,14 +33,34 @@ html.light body { background-color: #faf9f7; }
 }
 
 @keyframes pinPulse {
-  0%, 100% { opacity: 0.7; }
-  50%       { opacity: 1; }
+  0%, 100% { opacity: 0.65; transform: scale(1); }
+  50%       { opacity: 1;    transform: scale(1.12); }
 }
+
+@keyframes dotPulse {
+  0%, 100% { opacity: 0.45; transform: scale(1); }
+  50%       { opacity: 1;   transform: scale(1.45); }
+}
+
+@keyframes statBreathe {
+  0%, 100% { text-shadow: 0 0 10px rgba(245,158,11,0.25); }
+  50%       { text-shadow: 0 0 28px rgba(245,158,11,0.65), 0 0 56px rgba(245,158,11,0.2); }
+}
+
+/* ── Component classes ───────────────────────────────── */
 
 .sc-pin {
   display: block;
   flex-shrink: 0;
-  animation: pinPulse 3s ease-in-out infinite;
+  animation: pinPulse 3.5s ease-in-out infinite;
+}
+
+.sc-dot-pulse {
+  animation: dotPulse 2s ease-in-out infinite;
+}
+
+.sc-stat-breathe {
+  animation: statBreathe 3s ease-in-out infinite;
 }
 
 .sc-card {
