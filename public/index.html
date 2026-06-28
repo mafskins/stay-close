@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stay Close</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #0f1117;
+      color: #e8e8e8;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    h1 {
+      font-size: 1.8rem;
+      color: #7ecfa4;
+      margin-bottom: 0.25rem;
+    }
+
+    .tagline {
+      color: #888;
+      margin-bottom: 2rem;
+      font-size: 0.95rem;
+    }
+
+    form {
+      background: #1a1d27;
+      border: 1px solid #2a2d3a;
+      border-radius: 10px;
+      padding: 1.5rem;
+      max-width: 480px;
+      margin-bottom: 2.5rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.85rem;
+      color: #aaa;
+      margin-bottom: 0.4rem;
+      margin-top: 1rem;
+    }
+
+    label:first-child { margin-top: 0; }
+
+    input, textarea {
+      width: 100%;
+      background: #0f1117;
+      border: 1px solid #2a2d3a;
+      border-radius: 6px;
+      color: #e8e8e8;
+      padding: 0.65rem 0.8rem;
+      font-size: 1rem;
+      font-family: inherit;
+    }
+
+    textarea { resize: vertical; min-height: 90px; }
+
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #7ecfa4;
+    }
+
+    button {
+      margin-top: 1.25rem;
+      width: 100%;
+      background: #7ecfa4;
+      color: #0f1117;
+      border: none;
+      border-radius: 6px;
+      padding: 0.75rem;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    button:hover { background: #6abf94; }
+
+    #message {
+      font-size: 0.9rem;
+      margin-top: 0.75rem;
+      min-height: 1.2em;
+    }
+
+    .success { color: #7ecfa4; }
+    .error   { color: #e07070; }
+
+    h2 {
+      font-size: 1.1rem;
+      color: #aaa;
+      margin-bottom: 1rem;
+    }
+
+    #friends-list {
+      max-width: 480px;
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+
+    .friend-card {
+      background: #1a1d27;
+      border: 1px solid #2a2d3a;
+      border-radius: 8px;
+      padding: 1rem 1.25rem;
+    }
+
+    .friend-name {
+      font-weight: 600;
+      font-size: 1rem;
+      color: #e8e8e8;
+      margin-bottom: 0.25rem;
+    }
+
+    .friend-notes {
+      font-size: 0.88rem;
+      color: #888;
+      white-space: pre-wrap;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Stay Close</h1>
+  <p class="tagline">Your people matter. Remember them.</p>
+
+  <form id="friend-form">
+    <label for="name">Name</label>
+    <input type="text" id="name" placeholder="e.g. Hemi" required>
+
+    <label for="notes">Notes</label>
+    <textarea id="notes" placeholder="Kids' names, what they're into, what's going on for them..."></textarea>
+
+    <button type="submit">Add to your whānau</button>
+    <div id="message"></div>
+  </form>
+
+  <h2>Your people</h2>
+  <div id="friends-list"></div>
+
+  <script>
+    async function loadFriends() {
+      const res = await fetch('/friends');
+      const friends = await res.json();
+      const list = document.getElementById('friends-list');
+      list.innerHTML = '';
+      if (friends.length === 0) {
+        list.innerHTML = '<p style="color:#555;font-size:0.9rem;">No one added yet.</p>';
+        return;
+      }
+      friends.forEach(f => {
+        const card = document.createElement('div');
+        card.className = 'friend-card';
+        card.innerHTML = `
+          <div class="friend-name">${escapeHtml(f.name)}</div>
+          ${f.notes ? `<div class="friend-notes">${escapeHtml(f.notes)}</div>` : ''}
+        `;
+        list.appendChild(card);
+      });
+    }
+
+    function escapeHtml(str) {
+      return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+
+    document.getElementById('friend-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const notes = document.getElementById('notes').value;
+      const msg = document.getElementById('message');
+
+      const res = await fetch('/friends', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, notes })
+      });
+
+      if (res.ok) {
+        msg.textContent = `${name} added.`;
+        msg.className = 'success';
+        document.getElementById('friend-form').reset();
+        loadFriends();
+      } else {
+        const err = await res.json();
+        msg.textContent = err.error || 'Something went wrong.';
+        msg.className = 'error';
+      }
+
+      setTimeout(() => { msg.textContent = ''; }, 3000);
+    });
+
+    loadFriends();
+  </script>
+
+</body>
+</html>
