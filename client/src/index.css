@@ -59,15 +59,25 @@ html.light {
 
 html {
   -webkit-font-smoothing: antialiased;
-  background: var(--sc-bg);
-  color: var(--sc-text);
+  background-color: #1c1917;
+  color: #f5f0eb;
+}
+
+html.light {
+  background-color: #faf9f7;
+  color: #1c1917;
 }
 
 body {
   margin: 0;
   font-family: 'Inter', -apple-system, system-ui, sans-serif;
-  background: var(--sc-bg);
-  color: var(--sc-text);
+  background-color: inherit;
+  color: inherit;
+  min-height: 100vh;
+}
+
+#root {
+  background-color: inherit;
   min-height: 100vh;
 }
 
