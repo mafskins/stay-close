@@ -10,6 +10,7 @@ export default function App() {
   const [modalOpen, setModalOpen] = useState(false)
 
   useEffect(() => {
+    document.body.style.backgroundColor = '#1c1917'
     document.documentElement.className = theme
     localStorage.setItem('sc-theme', theme)
   }, [theme])
