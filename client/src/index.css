@@ -2,13 +2,18 @@
 
 *, *::before, *::after { box-sizing: border-box; }
 
-html { -webkit-font-smoothing: antialiased; }
+html { -webkit-font-smoothing: antialiased; background-color: #1c1917; }
+html.light { background-color: #faf9f7; }
 
 body {
   margin: 0;
   font-family: 'Inter', -apple-system, system-ui, sans-serif;
   min-height: 100vh;
+  background-color: #1c1917;
 }
+html.light body { background-color: #faf9f7; }
+
+#root { min-height: 100vh; }
 
 @keyframes fadeUp {
   from { opacity: 0; transform: translateY(16px); }
