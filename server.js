@@ -10,12 +10,14 @@ db.exec(`
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name TEXT NOT NULL,
     notes TEXT,
+    relationship TEXT DEFAULT 'Mate',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     last_contacted DATETIME
   )
 `);
 
 try { db.exec('ALTER TABLE friends ADD COLUMN last_contacted DATETIME'); } catch (_) {}
+try { db.exec("ALTER TABLE friends ADD COLUMN relationship TEXT DEFAULT 'Mate'"); } catch (_) {}
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
@@ -31,12 +33,12 @@ app.get('/friends', (req, res) => {
 });
 
 app.post('/friends', (req, res) => {
-  const { name, notes } = req.body;
+  const { name, notes, relationship } = req.body;
   if (!name || name.trim() === '') return res.status(400).json({ error: 'Name is required' });
-  const result = db.prepare('INSERT INTO friends (name, notes) VALUES (?, ?)').run(
-    name.trim(), notes ? notes.trim() : ''
-  );
-  res.json({ id: result.lastInsertRowid, name: name.trim(), notes: notes ? notes.trim() : '' });
+  const result = db.prepare(
+    'INSERT INTO friends (name, notes, relationship) VALUES (?, ?, ?)'
+  ).run(name.trim(), notes ? notes.trim() : '', relationship || 'Mate');
+  res.json({ id: result.lastInsertRowid, name: name.trim() });
 });
 
 app.post('/friends/:id/checkin', (req, res) => {

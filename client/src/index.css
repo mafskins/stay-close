@@ -1,0 +1,203 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ─── Stay Close design tokens ─── */
+:root {
+  --sc-bg:         #1c1410;
+  --sc-surface:    #2a2018;
+  --sc-surface-hv: #352a20;
+  --sc-border:     rgba(255,200,130,0.08);
+  --sc-border-act: rgba(255,200,130,0.16);
+  --sc-text:       #f5f0eb;
+  --sc-text-sec:   #a8a29e;
+  --sc-text-muted: #78716c;
+  --sc-accent:     #22c55e;
+  --sc-accent-sub: rgba(34,197,94,0.12);
+  --sc-warning:    #f59e0b;
+  --sc-warn-sub:   rgba(245,158,11,0.06);
+  --sc-danger:     #ef4444;
+  --radius: 0.625rem;
+}
+
+html.light {
+  --sc-bg:         #f7f3ee;
+  --sc-surface:    #ffffff;
+  --sc-surface-hv: #f7f3ee;
+  --sc-border:     rgba(0,0,0,0.07);
+  --sc-border-act: rgba(0,0,0,0.14);
+  --sc-text:       #1c1917;
+  --sc-text-sec:   #57534e;
+  --sc-text-muted: #a8a29e;
+  --sc-warn-sub:   rgba(245,158,11,0.09);
+}
+
+/* ─── Tailwind theme mappings ─── */
+@theme inline {
+  --color-background:           var(--sc-bg);
+  --color-foreground:           var(--sc-text);
+  --color-card:                 var(--sc-surface);
+  --color-card-foreground:      var(--sc-text);
+  --color-popover:              var(--sc-surface);
+  --color-popover-foreground:   var(--sc-text);
+  --color-primary:              var(--sc-accent);
+  --color-primary-foreground:   #000000;
+  --color-secondary:            var(--sc-surface);
+  --color-secondary-foreground: var(--sc-text);
+  --color-muted:                var(--sc-surface-hv);
+  --color-muted-foreground:     var(--sc-text-muted);
+  --color-accent:               var(--sc-surface-hv);
+  --color-accent-foreground:    var(--sc-text);
+  --color-destructive:          var(--sc-danger);
+  --color-border:               var(--sc-border);
+  --color-input:                var(--sc-border-act);
+  --color-ring:                 var(--sc-accent);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/* ─── Base ─── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-font-smoothing: antialiased; }
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, system-ui, sans-serif;
+  background: var(--sc-bg);
+  color: var(--sc-text);
+  min-height: 100vh;
+}
+
+/* ─── Keyframes ─── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes breathe {
+  0%, 100% { box-shadow: none; }
+  50%       { box-shadow: 0 0 0 1px rgba(245,158,11,0.18), 0 6px 24px rgba(245,158,11,0.1); }
+}
+
+@keyframes pinPulse {
+  0%, 100% { opacity: 0.7; }
+  50%       { opacity: 1; }
+}
+
+/* ─── Pin icon ─── */
+.sc-pin {
+  animation: pinPulse 3s ease-in-out infinite;
+  display: block;
+  flex-shrink: 0;
+}
+
+/* ─── Friend card ─── */
+.sc-card {
+  background: var(--sc-surface);
+  border: 1px solid var(--sc-border);
+  border-left: 3px solid transparent;
+  border-radius: 12px;
+  position: relative;
+  overflow: hidden;
+  animation: fadeUp 0.4s ease-out both;
+  animation-delay: var(--card-delay, 0ms);
+  transition:
+    background 150ms ease,
+    border-left-color 150ms ease,
+    border-left-width 150ms ease,
+    transform 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.sc-card:hover {
+  background: var(--sc-surface-hv);
+  border-left-width: 4px;
+  transform: translateY(-3px);
+}
+
+.sc-card.overdue {
+  border-left-color: var(--sc-warning);
+  background: linear-gradient(90deg, var(--sc-warn-sub) 0%, var(--sc-surface) 32%);
+  animation: fadeUp 0.4s ease-out both, breathe 4s ease-in-out infinite;
+  animation-delay: var(--card-delay, 0ms), calc(var(--card-delay, 0ms) + 600ms);
+}
+
+.sc-card.overdue:hover {
+  background: linear-gradient(90deg, rgba(245,158,11,0.10) 0%, var(--sc-surface-hv) 32%);
+}
+
+html.light .sc-card {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+}
+
+html.light .sc-card:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.10);
+}
+
+.sc-card-action {
+  opacity: 0;
+  transition: opacity 150ms ease;
+}
+
+.sc-card:hover .sc-card-action {
+  opacity: 1;
+}
+
+.sc-watermark {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 120px;
+  font-weight: 700;
+  color: var(--sc-text);
+  opacity: 0.04;
+  line-height: 1;
+  pointer-events: none;
+  user-select: none;
+  letter-spacing: -0.05em;
+}
+
+/* ─── Dialog ─── */
+.sc-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  background: rgba(0,0,0,0.65);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.sc-backdrop[data-open] { opacity: 1; }
+
+.sc-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 101;
+  transform: translate(-50%, calc(-50% + 20px));
+  opacity: 0;
+  outline: none;
+  transition: transform 200ms ease, opacity 200ms ease;
+  width: calc(100% - 48px);
+  max-width: 440px;
+}
+.sc-popup[data-open] {
+  transform: translate(-50%, -50%);
+  opacity: 1;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}

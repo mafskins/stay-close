@@ -12,8 +12,8 @@
       --bg:             #1c1917;
       --surface:        #292524;
       --surface-hover:  #3c3836;
-      --border:         rgba(255,255,255,0.08);
-      --border-active:  rgba(255,255,255,0.16);
+      --border:         rgba(255,220,160,0.09);
+      --border-active:  rgba(255,220,160,0.18);
       --accent:         #22c55e;
       --accent-subtle:  rgba(34,197,94,0.12);
       --accent-text:    #000;
@@ -21,14 +21,14 @@
       --text-secondary: #a8a29e;
       --text-muted:     #78716c;
       --warning:        #f59e0b;
-      --warning-subtle: rgba(245,158,11,0.06);
+      --warning-subtle: rgba(245,158,11,0.07);
       --danger:         #ef4444;
       color-scheme: dark;
     }
 
     body.light {
       --bg:             #faf9f7;
-      --surface:        #f5f4f0;
+      --surface:        #ffffff;
       --surface-hover:  #ede9e4;
       --border:         rgba(0,0,0,0.07);
       --border-active:  rgba(0,0,0,0.14);
@@ -74,12 +74,21 @@
       gap: 10px;
     }
 
-    .brand-icon { display: block; flex-shrink: 0; }
+    .brand-icon {
+      display: block;
+      flex-shrink: 0;
+      animation: pinPulse 3s ease-in-out infinite;
+    }
+
+    @keyframes pinPulse {
+      0%, 100% { opacity: 0.7; }
+      50%       { opacity: 1.0; }
+    }
 
     .brand-text { display: flex; flex-direction: column; gap: 3px; }
 
     .brand-name {
-      font-size: 15px;
+      font-size: 17px;
       font-weight: 600;
       letter-spacing: -0.01em;
       color: var(--text-primary);
@@ -150,14 +159,12 @@
     .stats {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      padding: 56px 0;
-      border-bottom: 1px solid var(--border);
+      padding: 72px 0 64px;
       margin-bottom: 48px;
     }
 
     .stat { padding-left: 40px; }
     .stat:first-child { padding-left: 0; }
-    .stat:not(:last-child) { border-right: 1px solid var(--border); }
 
     .stat-n {
       font-size: 40px;
@@ -169,7 +176,10 @@
     }
 
     .stat-n.is-zero    { color: var(--text-muted); }
-    .stat-n.is-warning { color: var(--warning); }
+    .stat-n.is-warning {
+      color: var(--warning);
+      text-shadow: 0 0 20px rgba(245,158,11,0.4);
+    }
 
     .stat-l {
       font-size: 11px;
@@ -191,26 +201,36 @@
       border: 1px solid var(--border);
       border-left: 3px solid transparent;
       border-radius: 12px;
-      padding: 24px 28px;
+      padding: 28px 32px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      transition: background 150ms ease, border-color 150ms ease, transform 150ms ease;
+      position: relative;
+      overflow: hidden;
+      transition: background 150ms ease, border-color 150ms ease, border-left-width 150ms ease, transform 150ms ease, box-shadow 150ms ease;
       animation: fadeUp 0.4s ease-out both;
       animation-delay: var(--card-delay, 0ms);
     }
 
+    body.light .card {
+      box-shadow: 0 1px 4px rgba(0,0,0,0.08), 0 4px 12px rgba(0,0,0,0.05);
+    }
+
     .card:hover {
       background: var(--surface-hover);
-      border-color: rgba(255,255,255,0.13);
-      transform: translateY(-2px);
+      border-left-width: 4px;
+      transform: translateY(-3px);
+    }
+
+    body.dark .card:hover {
+      border-color: rgba(255,200,130,0.15);
     }
 
     body.light .card:hover {
       border-color: rgba(0,0,0,0.12);
+      box-shadow: 0 4px 20px rgba(0,0,0,0.12), 0 1px 4px rgba(0,0,0,0.06);
     }
 
-    /* The creative risk: overdue cards breathe */
     .card.overdue {
       border-left-color: var(--warning);
       background: linear-gradient(90deg, var(--warning-subtle) 0%, var(--surface) 32%);
@@ -222,14 +242,30 @@
       background: linear-gradient(90deg, rgba(245,158,11,0.1) 0%, var(--surface-hover) 32%);
     }
 
+    /* Watermark initial */
+    .card-watermark {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 120px;
+      font-weight: 700;
+      color: var(--text-primary);
+      opacity: 0.055;
+      line-height: 1;
+      pointer-events: none;
+      user-select: none;
+      letter-spacing: -0.05em;
+    }
+
     @keyframes fadeUp {
       from { opacity: 0; transform: translateY(16px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
     @keyframes breathe {
-      0%, 100% { box-shadow: none; }
-      50%       { box-shadow: 0 0 0 1px rgba(245,158,11,0.18), 0 6px 24px rgba(245,158,11,0.1); }
+      0%, 100% { box-shadow: 0 0 0 1px rgba(245,158,11,0.10); }
+      50%       { box-shadow: 0 0 0 1px rgba(245,158,11,0.28), 0 6px 28px rgba(245,158,11,0.14); }
     }
 
     /* Card internals */
@@ -237,6 +273,8 @@
       display: flex;
       align-items: center;
       gap: 16px;
+      position: relative;
+      z-index: 1;
     }
 
     .avatar {
@@ -280,6 +318,8 @@
       gap: 8px;
       flex-shrink: 0;
       margin-left: 16px;
+      position: relative;
+      z-index: 1;
     }
 
     .c-days {
@@ -518,7 +558,6 @@
     </div>
     <div class="header-actions">
       <button class="btn-theme" onclick="toggleTheme()" aria-label="Toggle theme">
-        <!-- sun: shown in dark mode, click to go light -->
         <svg class="icon-sun" width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
           <circle cx="7.5" cy="7.5" r="2.5"/>
           <line x1="7.5" y1="1"    x2="7.5" y2="2.5"/>
@@ -530,7 +569,6 @@
           <line x1="12"  y1="3"    x2="10.9" y2="4.1"/>
           <line x1="4.1" y1="10.9" x2="3"   y2="12"/>
         </svg>
-        <!-- moon: shown in light mode, click to go dark -->
         <svg class="icon-moon" width="13" height="13" viewBox="0 0 13 13" fill="currentColor">
           <path d="M11 7.3A5 5 0 0 1 5.7 2a5 5 0 1 0 5.3 5.3z"/>
         </svg>
@@ -611,7 +649,6 @@
     localStorage.setItem('sc-theme', isDark ? 'light' : 'dark');
   }
 
-  // Warm avatar palette — dark backgrounds, warm foregrounds
   const AVATAR_PALETTE = [
     { bg: '#3d2b1f', fg: '#fdba74' },
     { bg: '#1f3320', fg: '#86efac' },
@@ -674,12 +711,14 @@
     const rel     = f.relationship || 'Mate';
     const colour  = avatarColour(f.name);
     const status  = daysStatus(days);
+    const wm      = esc(f.name.trim()[0].toUpperCase());
 
     const card = document.createElement('div');
     card.className = 'card' + (overdue ? ' overdue' : '');
     card.style.setProperty('--card-delay', `${i * 80}ms`);
 
     card.innerHTML = `
+      <div class="card-watermark">${wm}</div>
       <div class="card-left">
         <div class="avatar" style="background:${colour.bg};color:${colour.fg}">${esc(initials(f.name))}</div>
         <div class="card-meta">
