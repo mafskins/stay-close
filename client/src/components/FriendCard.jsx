@@ -29,12 +29,13 @@ export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
         borderBottom: `1px solid ${t.border}`,
         borderLeft:   `${hovered ? 4 : 3}px solid ${overdue ? t.warning : 'transparent'}`,
         borderRadius: 12,
-        padding: '24px 28px',
+        padding: '20px 24px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        transition: 'background 150ms ease, border-left-width 150ms ease, transform 150ms ease',
-        transform: hovered ? 'translateY(-3px)' : 'none',
+        cursor: 'default',
+        transition: 'transform 150ms ease',
+        transform: hovered ? 'translateY(-3px)' : 'translateY(0)',
       }}
     >
       {/* Watermark */}
@@ -43,13 +44,13 @@ export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
       {/* Left: avatar + name */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 16, position: 'relative', zIndex: 1 }}>
         <div style={{
-          width: 36,
-          height: 36,
+          width: 40,
+          height: 40,
           borderRadius: '50%',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          fontSize: 12,
+          fontSize: 13,
           fontWeight: 700,
           flexShrink: 0,
           letterSpacing: '0.02em',
@@ -65,27 +66,27 @@ export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
             color: t.text,
             letterSpacing: '-0.01em',
             lineHeight: 1,
-            textTransform: 'capitalize',
           }}>
             {friend.name}
           </div>
           <div style={{ fontSize: 12, color: t.muted, lineHeight: 1 }}>
-            · {rel}
+            {rel}
           </div>
         </div>
       </div>
 
-      {/* Right: status + actions */}
+      {/* Right: status + action buttons */}
       <div style={{
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-end',
-        gap: 8,
+        gap: 10,
         flexShrink: 0,
         marginLeft: 16,
         position: 'relative',
         zIndex: 1,
       }}>
+        {/* Last contacted */}
         <div style={{
           fontSize: 12,
           lineHeight: 1,
@@ -96,7 +97,15 @@ export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
           {status.text}
         </div>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
+        {/* Hover-reveal buttons */}
+        <div style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: 16,
+          opacity: hovered ? 1 : 0,
+          pointerEvents: hovered ? 'auto' : 'none',
+          transition: 'opacity 150ms ease',
+        }}>
           <button
             onClick={onRemove}
             style={{
@@ -107,14 +116,13 @@ export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
               fontFamily: 'inherit',
               cursor: 'pointer',
               padding: 0,
-              opacity: hovered ? 1 : 0,
-              transition: 'opacity 150ms ease, color 150ms ease',
               lineHeight: 1,
               color: t.muted,
               whiteSpace: 'nowrap',
+              transition: 'color 100ms ease',
             }}
-            onMouseEnter={e => e.currentTarget.style.color = t.danger}
-            onMouseLeave={e => e.currentTarget.style.color = t.muted}
+            onMouseEnter={e => { e.currentTarget.style.color = t.danger }}
+            onMouseLeave={e => { e.currentTarget.style.color = t.muted }}
           >
             Remove
           </button>
@@ -128,8 +136,6 @@ export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
               fontFamily: 'inherit',
               cursor: 'pointer',
               padding: 0,
-              opacity: hovered ? 1 : 0,
-              transition: 'opacity 150ms ease',
               lineHeight: 1,
               color: t.accent,
               whiteSpace: 'nowrap',
