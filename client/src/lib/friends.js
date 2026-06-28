@@ -39,6 +39,15 @@ export function isOverdue(lastContacted) {
   return d === null || d >= 7
 }
 
+const MONTHS = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+
+export function formatDate(d) {
+  if (!d) return null
+  const date = new Date(d.includes('T') ? d : d.replace(' ', 'T'))
+  if (isNaN(date.getTime())) return null
+  return `${date.getDate()} ${MONTHS[date.getMonth()]} ${date.getFullYear()}`
+}
+
 export function statusColor(type, t) {
   switch (type) {
     case 'fresh': return t.accent

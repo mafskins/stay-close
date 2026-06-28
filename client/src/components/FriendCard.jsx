@@ -1,16 +1,17 @@
 import { useState } from 'react'
-import { avatarColor, initials, daysSince, daysStatus, isOverdue, statusColor } from '@/lib/friends'
+import { avatarColor, initials, daysSince, daysStatus, isOverdue, statusColor, formatDate } from '@/lib/friends'
 
 export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
   const [hovered, setHovered] = useState(false)
 
-  const overdue = isOverdue(friend.last_contacted)
-  const days    = daysSince(friend.last_contacted)
-  const status  = daysStatus(days)
-  const sColor  = statusColor(status.type, t)
-  const color   = avatarColor(friend.name)
-  const rel     = friend.relationship || 'Mate'
-  const wm      = (friend.name.trim()[0] || '?').toUpperCase()
+  const overdue  = isOverdue(friend.last_contacted)
+  const days     = daysSince(friend.last_contacted)
+  const status   = daysStatus(days)
+  const sColor   = statusColor(status.type, t)
+  const color    = avatarColor(friend.name)
+  const rel      = friend.relationship || 'Mate'
+  const wm       = (friend.name.trim()[0] || '?').toUpperCase()
+  const dateStr  = formatDate(friend.last_contacted)
 
   const bg = overdue
     ? `linear-gradient(90deg, ${hovered ? 'rgba(245,158,11,0.10)' : t.warnSub} 0%, ${hovered ? t.cardHover : t.card} 32%)`
@@ -27,21 +28,21 @@ export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
         borderTop:    `1px solid ${t.border}`,
         borderRight:  `1px solid ${t.border}`,
         borderBottom: `1px solid ${t.border}`,
-        borderLeft:   `${hovered ? 4 : 3}px solid ${overdue ? t.warning : 'transparent'}`,
+        borderLeft:   `3px solid ${overdue ? t.warning : 'transparent'}`,
         borderRadius: 12,
         padding: '20px 24px',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
         cursor: 'default',
-        transition: 'transform 150ms ease',
+        transition: 'transform 150ms ease, background 150ms ease',
         transform: hovered ? 'translateY(-3px)' : 'translateY(0)',
       }}
     >
-      {/* Watermark */}
+      {/* Watermark letter */}
       <div className="sc-watermark" style={{ color: t.text }}>{wm}</div>
 
-      {/* Left: avatar + name */}
+      {/* Left: avatar + name + relationship */}
       <div style={{ display: 'flex', alignItems: 'center', gap: 16, position: 'relative', zIndex: 1 }}>
         <div style={{
           width: 40,
@@ -70,23 +71,23 @@ export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
             {friend.name}
           </div>
           <div style={{ fontSize: 12, color: t.muted, lineHeight: 1 }}>
-            {rel}
+            · {rel}
           </div>
         </div>
       </div>
 
-      {/* Right: status + action buttons */}
+      {/* Right: status text + date + hover buttons */}
       <div style={{
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'flex-end',
-        gap: 10,
+        gap: 6,
         flexShrink: 0,
         marginLeft: 16,
         position: 'relative',
         zIndex: 1,
       }}>
-        {/* Last contacted */}
+        {/* Status label e.g. "Spoke today", "3 days ago", "No contact yet" */}
         <div style={{
           fontSize: 12,
           lineHeight: 1,
@@ -97,11 +98,24 @@ export default function FriendCard({ friend, index, t, onCheckin, onRemove }) {
           {status.text}
         </div>
 
-        {/* Hover-reveal buttons */}
+        {/* Actual date e.g. "28 Jun 2026" */}
+        {dateStr && (
+          <div style={{
+            fontSize: 11,
+            lineHeight: 1,
+            color: t.muted,
+            whiteSpace: 'nowrap',
+          }}>
+            {dateStr}
+          </div>
+        )}
+
+        {/* Hover-reveal action buttons */}
         <div style={{
           display: 'flex',
           alignItems: 'center',
           gap: 16,
+          marginTop: 4,
           opacity: hovered ? 1 : 0,
           pointerEvents: hovered ? 'auto' : 'none',
           transition: 'opacity 150ms ease',

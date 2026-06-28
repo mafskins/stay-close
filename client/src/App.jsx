@@ -43,9 +43,10 @@ export default function App() {
   const t = mode === 'dark' ? DARK : LIGHT
 
   useEffect(() => {
+    document.documentElement.style.backgroundColor = t.bg
+    document.documentElement.className = mode
     document.body.style.backgroundColor = t.bg
     document.body.style.color = t.text
-    document.documentElement.style.backgroundColor = t.bg
     localStorage.setItem('sc-theme', mode)
   }, [mode, t.bg, t.text])
 

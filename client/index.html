@@ -7,7 +7,15 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <script>document.documentElement.className = localStorage.getItem('sc-theme') || 'dark';</script>
+    <script>
+      (function() {
+        var t = localStorage.getItem('sc-theme') || 'dark';
+        var bg = t === 'light' ? '#faf9f7' : '#1c1917';
+        document.documentElement.className = t;
+        document.documentElement.style.backgroundColor = bg;
+        document.documentElement.style.color = t === 'light' ? '#1c1917' : '#f5f0eb';
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
