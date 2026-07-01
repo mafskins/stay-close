@@ -13,7 +13,11 @@ try { db.exec("ALTER TABLE friends ADD COLUMN relationship TEXT DEFAULT 'Mate'")
 try { db.exec('ALTER TABLE friends ADD COLUMN last_chat TEXT'); } catch (_) {}
 
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, 'client', 'dist')));
+
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'client', 'dist', 'index.html'));
+});
 
 app.get('/friends', (req, res) => {
   const friends = db.prepare('SELECT * FROM friends ORDER BY CASE WHEN last_contacted IS NULL THEN 0 ELSE 1 END ASC, COALESCE(last_contacted, created_at) ASC').all();
