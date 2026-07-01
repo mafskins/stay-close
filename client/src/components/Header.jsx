@@ -1,6 +1,6 @@
 ﻿import { Sun, Moon } from 'lucide-react'
 
-export default function Header({ t, mode, greeting, onToggleTheme, onAdd }) {
+export default function Header({ t, mode, greeting, onToggleTheme, onAdd, onResources, showingResources }) {
   return (
     <header style={{
       position: 'sticky',
@@ -57,6 +57,24 @@ export default function Header({ t, mode, greeting, onToggleTheme, onAdd }) {
 
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
           <button
+            onClick={onResources}
+            style={{
+              background: 'none',
+              border: 'none',
+              color: showingResources ? t.danger : t.muted,
+              fontSize: 12,
+              cursor: 'pointer',
+              fontFamily: 'inherit',
+              padding: '4px 2px',
+              transition: 'color 150ms ease',
+            }}
+            onMouseEnter={e => e.currentTarget.style.color = t.danger}
+            onMouseLeave={e => e.currentTarget.style.color = showingResources ? t.danger : t.muted}
+          >
+            {showingResources ? '<- back' : 'need support?'}
+          </button>
+
+          <button
             onClick={onToggleTheme}
             aria-label="Toggle theme"
             style={{
@@ -75,7 +93,7 @@ export default function Header({ t, mode, greeting, onToggleTheme, onAdd }) {
             {mode === 'dark' ? <Sun size={14} /> : <Moon size={13} />}
           </button>
 
-          <button
+          {!showingResources && <button
             onClick={onAdd}
             style={{
               background: t.accent,
@@ -94,7 +112,7 @@ export default function Header({ t, mode, greeting, onToggleTheme, onAdd }) {
             onMouseLeave={e => e.currentTarget.style.filter = 'none'}
           >
             + Add someone
-          </button>
+          </button>}
         </div>
 
       </div>
