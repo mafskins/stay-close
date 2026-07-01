@@ -1,35 +1,28 @@
-/* Animations and structural CSS only — all colours are inline styles in React */
+﻿*, *::before, *::after { box-sizing: border-box; }
 
-*, *::before, *::after { box-sizing: border-box; }
-
-html { -webkit-font-smoothing: antialiased; background-color: #1c1917; }
-html.light { background-color: #faf9f7; }
+html { -webkit-font-smoothing: antialiased; background-color: #18191a; }
+html.light { background-color: #f0f2f5; }
 
 body {
   margin: 0;
   font-family: 'Inter', -apple-system, system-ui, sans-serif;
   min-height: 100vh;
-  background-color: #1c1917;
+  background-color: #18191a;
 }
-html.light body { background-color: #faf9f7; }
+html.light body {
+  background-color: #f0f2f5;
+}
 
-#root { min-height: 100vh; }
-
-/* ── Keyframes ───────────────────────────────────────── */
+#root { min-height: 100vh; position: relative; z-index: 1; }
 
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideIn {
-  from { opacity: 0; transform: translateY(44px); }
+  from { opacity: 0; transform: translateY(16px); }
   to   { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes breathe {
-  0%, 100% { box-shadow: 0 0 0 1px rgba(245,158,11,0.10); }
-  50%       { box-shadow: 0 0 0 1px rgba(245,158,11,0.28), 0 6px 28px rgba(245,158,11,0.14); }
+  0%, 100% { box-shadow: 0 0 0 1px rgba(66,184,131,0.15); }
+  50%       { box-shadow: 0 0 0 1px rgba(66,184,131,0.5), 0 0 24px rgba(66,184,131,0.12); }
 }
 
 @keyframes pinPulse {
@@ -43,36 +36,24 @@ html.light body { background-color: #faf9f7; }
 }
 
 @keyframes statBreathe {
-  0%, 100% { text-shadow: 0 0 10px rgba(245,158,11,0.25); }
-  50%       { text-shadow: 0 0 28px rgba(245,158,11,0.65), 0 0 56px rgba(245,158,11,0.2); }
+  0%, 100% { text-shadow: 0 0 8px rgba(66,184,131,0.2); }
+  50%       { text-shadow: 0 0 20px rgba(66,184,131,0.7); }
 }
 
-/* ── Component classes ───────────────────────────────── */
-
-.sc-pin {
-  display: block;
-  flex-shrink: 0;
-  animation: pinPulse 3.5s ease-in-out infinite;
-}
-
-.sc-dot-pulse {
-  animation: dotPulse 2s ease-in-out infinite;
-}
-
-.sc-stat-breathe {
-  animation: statBreathe 3s ease-in-out infinite;
-}
+.sc-pin { display: block; flex-shrink: 0; animation: pinPulse 3.5s ease-in-out infinite; }
+.sc-dot-pulse { animation: dotPulse 2s ease-in-out infinite; }
+.sc-stat-breathe { animation: statBreathe 3s ease-in-out infinite; }
 
 .sc-card {
   position: relative;
   overflow: hidden;
-  animation: fadeUp 0.4s ease-out both;
+  animation: fadeUp 0.3s ease-out both;
   animation-delay: var(--card-delay, 0ms);
 }
 
 .sc-card.overdue {
-  animation: fadeUp 0.4s ease-out both, breathe 4s ease-in-out infinite;
-  animation-delay: var(--card-delay, 0ms), calc(var(--card-delay, 0ms) + 600ms);
+  animation: fadeUp 0.3s ease-out both, breathe 4s ease-in-out infinite;
+  animation-delay: var(--card-delay, 0ms), calc(var(--card-delay, 0ms) + 400ms);
 }
 
 .sc-watermark {
@@ -82,7 +63,7 @@ html.light body { background-color: #faf9f7; }
   transform: translateY(-50%);
   font-size: 120px;
   font-weight: 700;
-  opacity: 0.055;
+  opacity: 0.03;
   line-height: 1;
   pointer-events: none;
   user-select: none;
@@ -93,7 +74,7 @@ html.light body { background-color: #faf9f7; }
   position: fixed;
   inset: 0;
   z-index: 100;
-  background: rgba(0,0,0,0.65);
+  background: rgba(0,0,0,0.6);
   backdrop-filter: blur(4px);
   -webkit-backdrop-filter: blur(4px);
   opacity: 0;
@@ -113,14 +94,13 @@ html.light body { background-color: #faf9f7; }
   width: calc(100% - 48px);
   max-width: 440px;
 }
-.sc-popup[data-open] {
-  transform: translate(-50%, -50%);
-  opacity: 1;
-}
+.sc-popup[data-open] { transform: translate(-50%, -50%); opacity: 1; }
 
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}
+
+@keyframes pinRipple {
+  0%   { transform: translate(-50%, -60%) scale(0.4); opacity: 0.7; }
+  100% { transform: translate(-50%, -60%) scale(2.2); opacity: 0; }
 }

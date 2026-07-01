@@ -7,23 +7,14 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-    <!-- Layer 1: hardcoded style tag — fires before any JS or bundle CSS -->
     <style>
-      html, body, #root {
-        background-color: #1c1917 !important;
-        min-height: 100vh;
-      }
-      html.light, html.light body, html.light #root {
-        background-color: #faf9f7 !important;
-      }
+      html, body, #root { background-color: #030014 !important; min-height: 100vh; }
+      html.light, html.light body, html.light #root { background-color: #f8fafc !important; }
     </style>
-
-    <!-- Layer 2: flash-prevention script — runs before React mounts -->
     <script>
       (function() {
         var t = localStorage.getItem('sc-theme') || 'dark';
-        var bg = t === 'light' ? '#faf9f7' : '#1c1917';
+        var bg = t === 'light' ? '#f8fafc' : '#030014';
         document.documentElement.className = t;
         document.documentElement.style.setProperty('background-color', bg, 'important');
         document.body && document.body.style.setProperty('background-color', bg, 'important');
