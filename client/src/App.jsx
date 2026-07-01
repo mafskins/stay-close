@@ -7,6 +7,7 @@ import NudgeBar from './components/NudgeBar'
 import SpotlightCard from './components/SpotlightCard'
 import MilestoneReminder from './components/MilestoneReminder'
 import SearchBar from './components/SearchBar'
+import ResourceLayer from './components/ResourceLayer'
 import { isOverdue, daysSince } from './lib/friends'
 import './index.css'
 
@@ -26,13 +27,13 @@ const DARK = {
 }
 
 const LIGHT = {
-  bg:        '#f0f2f5',
-  card:      '#ffffff',
+  bg:        '#f5f0e8',
+  card:      '#fdfaf4',
   cardHover: '#f7f8fa',
-  border:    'rgba(0,0,0,0.08)',
+  border:    'rgba(0,0,0,0.12)',
   borderAct: 'rgba(34,139,87,0.4)',
-  text:      '#050505',
-  textSec:   '#65676b',
+  text:      '#1a1612',
+  textSec:   '#5a5248',
   muted:     '#8a8d91',
   accent:    '#1a7a4a',
   warning:   '#d97706',
@@ -59,14 +60,15 @@ function getName() {
 }
 
 export default function App() {
-  const [friends, setFriends]       = useState([])
-  const [milestones, setMilestones] = useState([])
-  const [search, setSearch]         = useState('')
-  const [mode, setMode]             = useState(() => localStorage.getItem('sc-theme') || 'dark')
-  const [modalOpen, setModalOpen]   = useState(false)
+  const [friends, setFriends]         = useState([])
+  const [milestones, setMilestones]   = useState([])
+  const [search, setSearch]           = useState('')
+  const [mode, setMode]               = useState(() => localStorage.getItem('sc-theme') || 'dark')
+  const [modalOpen, setModalOpen]     = useState(false)
   const [newFriendId, setNewFriendId] = useState(null)
-  const [greeting]                  = useState(getGreeting)
-  const [userName]                  = useState(getName)
+  const [showResources, setShowResources] = useState(false)
+  const [greeting]                    = useState(getGreeting)
+  const [userName]                    = useState(getName)
 
   const t = mode === 'dark' ? DARK : LIGHT
 
@@ -134,13 +136,26 @@ export default function App() {
 
   const greetingLine = userName ? greeting + ', ' + userName : greeting
   const filtered = search.trim()
-    ? friends.filter(f => f.name.toLowerCase().includes(search.toLowerCase()) || (f.notes || '').toLowerCase().includes(search.toLowerCase()) || (f.relationship || '').toLowerCase().includes(search.toLowerCase()))
+    ? friends.filter(f =>
+        f.name.toLowerCase().includes(search.toLowerCase()) ||
+        (f.notes || '').toLowerCase().includes(search.toLowerCase()) ||
+        (f.relationship || '').toLowerCase().includes(search.toLowerCase())
+      )
     : friends
+
+  if (showResources) {
+    return (
+      <div style={{ backgroundColor: t.bg, minHeight: '100vh', color: t.text }}>
+        <Header t={t} mode={mode} greeting={greetingLine} onToggleTheme={toggleTheme} onAdd={() => setModalOpen(true)} onResources={() => setShowResources(false)} showingResources />
+        <ResourceLayer t={t} onClose={() => setShowResources(false)} />
+      </div>
+    )
+  }
 
   return (
     <div style={{ backgroundColor: t.bg, minHeight: '100vh', color: t.text, position: 'relative' }}>
       <div style={{ position: 'relative', zIndex: 1 }}>
-        <Header t={t} mode={mode} greeting={greetingLine} onToggleTheme={toggleTheme} onAdd={() => setModalOpen(true)} />
+        <Header t={t} mode={mode} greeting={greetingLine} onToggleTheme={toggleTheme} onAdd={() => setModalOpen(true)} onResources={() => setShowResources(true)} />
 
         <main style={{ maxWidth: 800, margin: '0 auto', padding: '0 24px 80px' }}>
           <Stats t={t} friends={friends} />

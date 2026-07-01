@@ -1,7 +1,7 @@
 ﻿*, *::before, *::after { box-sizing: border-box; }
 
 html { -webkit-font-smoothing: antialiased; background-color: #18191a; }
-html.light { background-color: #f0f2f5; }
+html.light { background-color: #f5f0e8; }
 
 body {
   margin: 0;
@@ -10,7 +10,7 @@ body {
   background-color: #18191a;
 }
 html.light body {
-  background-color: #f0f2f5;
+  background-color: #f5f0e8;
 }
 
 #root { min-height: 100vh; position: relative; z-index: 1; }
